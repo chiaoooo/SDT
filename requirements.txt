@@ -1,0 +1,13 @@
+Six
+numpy
+packaging 
+pyyaml 
+pillow 
+lmdb 
+tqdm 
+Fastdtw 
+tensorboardX 
+easydict==1.9 
+einops==0.4.1 
+chardet
+opencv-python
