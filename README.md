@@ -136,6 +136,7 @@ ex：　
 
 ### 生成：user_generate.py
 先將圖片命名為字符本人，放進 --style_path 的 folder 中，如下：
+<br>
 <img src="readme_image/example.png">
 
 > 如果你的圖片檔名原本是 unicode，可以使 filename_translate.py 來讀取 unicode 並重新命名。如果圖片需要 resize 可使用 resize_to_jpg.py 更改圖片大小為 64*64。
