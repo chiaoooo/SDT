@@ -1,139 +1,179 @@
-![MIT LICENSE](https://shields.io/badge/license-MIT-green)
-![python 3.8](https://img.shields.io/badge/python-3.8-brightgreen)
-# 🔥 Disentangling Writer and Character Styles for Handwriting Generation
+# <font class="h2">**SDT 執行筆記/北科AI運算平台V100**</font>
 
- <p align='center'>
-  <b>
-    <a href="https://arxiv.org/abs/2303.14736">ArXiv</a>
-    |
-    <a href="https://github.com/dailenson/SDT/blob/master/static/Poster_SDT.pdf">Poster</a>
-    | 
-    <a href="https://youtu.be/mKbYLEwa4dI">Video</a>
-    | 
-    <a href="https://cvpr2023.thecvf.com/virtual/2023/poster/20954">Project</a>
-  </b>
-</p> 
-
-## 📢 Introduction
-- The proposed style-disentangled Transformer (SDT) generates online handwritings with conditional content and style. Existing RNN-based methods mainly focus on capturing a person’s overall writing style, neglecting subtle style inconsistencies between characters written by the same person. In light of this, SDT disentangles the writer-wise and character-wise style representations from individual handwriting samples for enhancing imitation performance.
-- We extend SDT and introduce an offline-to-offline framework for improving the generation quality of offline Chinese handwritings.
-
-![overview_sdt](static/overview_sdt.jpg)
-
-## 📺 Handwriting generation results
-- **Online Chinese handwriting generation**
-![online Chinese](static/online_Chinese.jpg)
-- **Applications to various scripts**
-![other scripts](static/various_scripts.jpg)
-- **Extension on offline Chinese handwriting generation**
-![offline Chinese](static/offline_Chinese.jpg)
+<style>
+.h3 {
+  background: linear-gradient(135deg,#fff,#6FB7B7) ;
+  color: #BF0060;
+  display:block;
+  padding: 6px 5px;
+  border-radius: 4px;
+}
+.h2 {
+  background: linear-gradient(180deg,#fff 50%,	#A3D1D1) ;
+  color: #336666;
+  display:block;
+  padding: 6px 5px;
+  border-radius: 8px;
+  border-bottom: 3px solid #003060;
+}
+</style>
 
 
-## 🔨 Requirements
+**Github:** https://github.com/dailenson/SDT?tab=readme-ov-file
+！！！電腦要有 <font color="darkblue">**NVIDIA GPU**</font>！！！
+
+### 說明: 
+
+SDT 是使用 Online 資料集作為輸入（包含下筆點、起筆點、筆畫等等，他們放在 lmdb 檔，雖然他們的 input 也還是圖像，但那跟 lmdb 的內容是相對應的），所以我們的 offline 數據（圖像）沒辦法拿去訓練，但根據我的測試（把1020個字體中的240個字體圖像換成我在方正字庫下載的字體）結果還是有比較好的，推測是 SDT 使用的數據集 CASIA-CHINESE 的字體筆劃都太細，所以雖然我的圖片跟他的 lmdb 資料對不起來，但將部分字體換成筆畫比較正常（粗）的去重新訓練確實能夠改善訓練結果。
+
+另外他的 test 是也是根據他的 lmdb，所以如果新增 data 在 test 裡面想要用 test.py 生成的話會報錯，要生成自己的字體就用 user_generate.py 就好。此外作者沒有提供他生成 lmdb 的程式碼，也沒有其數據的範例，lmdb 我也打不開，所以真的收集到 online 資料及可能也沒辦法用，請自行評估！
+
+
+<br>
+
+### 環境 & 套件
+
+環境設置：
 ```
 python 3.8
-pytorch >=1.8
-easydict 1.9
-einops 0.4.1
-```
-## 📂 Folder Structure
-  ```
-  SDT/
-  │
-  ├── train.py - main script to start training
-  ├── test.py - generate characters via trained model
-  ├── evaluate.py - evaluation of generated samples
-  │
-  ├── configs/*.yml - holds configuration for training
-  ├── parse_config.py - class to handle config file
-  │
-  ├── data_loader/ - anything about data loading goes here
-  │   └── loader.py
-  │
-  ├── model_zoo/ - pre-trained content encoder model
-  │
-  ├── data/ - default directory for storing experimental datasets
-  │
-  ├── model/ - networks, models and losses
-  │   ├── encoder.py
-  │   ├── gmm.py
-  │   ├── loss.py
-  │   ├── model.py
-  │   └── transformer.py
-  │
-  ├── saved/
-  │   ├── models/ - trained models are saved here
-  │   ├── tborad/ - tensorboard visualization
-  │   └── samples/ - visualization samples in the training process
-  │
-  ├── trainer/ - trainers
-  │   └── trainer.py
-  │  
-  └── utils/ - small utility functions
-      ├── util.py
-      └── logger.py - set log dir for tensorboard and logging output
-  ```
-
-## 💿 Datasets
-
-We provide Chinese, Japanese and English datasets in [Google Drive](https://drive.google.com/drive/folders/17Ju2chVwlNvoX7HCKrhJOqySK-Y-hU8K?usp=share_link) | [Baidu Netdisk](https://pan.baidu.com/s/1RNQSRhBAEFPe2kFXsHZfLA) PW:xu9u. Please download these datasets, uzip them and move the extracted files to /data.
-
-## 🍔 Pre-trained model
-- We provide the pre-trained content encoder model in [Google Drive](https://drive.google.com/drive/folders/1N-MGRnXEZmxAW-98Hz2f-o80oHrNaN_a?usp=share_link) | [Baidu Netdisk](https://pan.baidu.com/s/1RNQSRhBAEFPe2kFXsHZfLA) PW:xu9u. Please download and put it to the /model_zoo. 
-- We provide the well-trained SDT model in [Google Drive](https://drive.google.com/drive/folders/1LendizOwcNXlyY946ThS8HQ4wJX--YL7?usp=sharing) | [Baidu Netdisk](https://pan.baidu.com/s/1RNQSRhBAEFPe2kFXsHZfLA) PW:xu9u, so that users can get rid of retraining one and play it right away.
-
-## 🚀 Training & Test
-**Training**
-- To train the SDT on the Chinese dataset, run this command:
-```
-python train.py --cfg configs/CHINESE_CASIA.yml --log Chinese_log
+pytorch>=1.8（我使用 1.12.1）
+CUDA 11.3.1
 ```
 
-- To train the SDT on the Japanese dataset, run this command:
+套件安裝：
 ```
-python train.py --cfg configs/Japanese_TUATHANDS.yml --log Japanese_log
-```
+conda create --name SDT python=3.8
+conda activate SDT
+pip install -r requirements.txt
 
-- To train the SDT on the English dataset, run this command:
-```
-python train.py --cfg configs/English_CASIA.yml --log English_log
-```
+**requirements.txt 的內容物**
 
-**Qualitative Test**
-- To generate Chinese handwritings with our SDT, run this command:
-```
-python test.py --pretrained_model checkpoint_path --store_type online --sample_size 500 --dir Generated/Chinese
-```
+Six
+numpy
+packaging 
+pyyaml 
+pillow 
+lmdb 
+tqdm 
+Fastdtw 
+tensorboardX 
+easydict==1.9 
+einops==0.4.1 
+chardet
+opencv-python
 
-- To generate Japanese handwritings with our SDT, run this command:
-```
-python test.py --pretrained_model checkpoint_path --store_type online --sample_size 500 --dir Generated/Japanese
-```
+**requirements.txt 的內容物**
 
-- To generate English handwritings with our SDT, run this command:
-```
-python test.py --pretrained_model checkpoint_path --store_type online --sample_size 500 --dir Generated/English
-```
-
-**Quantitative Evaluation**
-- To evaluate the generated handwritings, you need to set `data_path` to the path of the generated handwritings (e.g., Generated/Chinese), and run this command:
-```
-python evaluate.py --data_path Generated/Chinese
-```
-
-## ❤️ Citation
-If you find our work inspiring or use our codebase in your research, please cite our work:
-```
-@inproceedings{dai2023disentangling,
-  title={Disentangling Writer and Character Styles for Handwriting Generation},
-  author={Dai, Gang and Zhang, Yifan and Wang, Qingfeng and Du, Qing and Yu, Zhuliang and Liu, Zhuoman and Huang, Shuangping},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition,
-  pages={5977--5986},
-  year={2023}
-}
-```
-
-## ⭐ StarGraph
-[![Star History Chart](https://api.star-history.com/svg?repos=dailenson/SDT&type=Timeline)](https://star-history.com/#dailenson/SDT&Timeline)
+conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
+sudo apt-get install libgl1-mesa-glx（出現 error 就先 sudo apt-get update）
+conda install glib
 
 
+```
+CUDA 及 Pytorch 版本對應關係可參考：
+https://pytorch.org/get-started/previous-versions/
+
+<br>
+
+### 資料 & 架構
+* 資料集：
+https://drive.google.com/drive/folders/17Ju2chVwlNvoX7HCKrhJOqySK-Y-hU8K
+* Pre-trained content encoder：
+https://drive.google.com/drive/folders/1N-MGRnXEZmxAW-98Hz2f-o80oHrNaN_a
+* Well-trained SDT model：[https://drive.google.com/drive/folders/1LendizOwcNXlyY946ThS8HQ4wJX--YL7](https://drive.google.com/drive/folders/1LendizOwcNXlyY946ThS8HQ4wJX--YL7)
+
+```
+SDT/
+│
+├── train.py - main script to start training
+├── test.py - generate characters via trained model
+├── evaluate.py - evaluation of generated samples
+│
+├── configs/*.yml - holds configuration for training
+├── parse_config.py - class to handle config file
+│
+├── data_loader/ - anything about data loading goes here
+│   └── loader.py
+│
+├── model_zoo/ - pre-trained content encoder model
+│
+├── data/ - default directory for storing experimental datasets
+│   ├── CASIA_ENGLISH/
+│   └── CASIA_CHINESE/
+│
+│
+├── model/ - networks, models and losses
+│   ├── encoder.py
+│   ├── gmm.py
+│   ├── loss.py
+│   ├── model.py
+│   └── transformer.py
+│
+├── saved/
+│   ├── models/ - trained models are saved here
+│   ├── tborad/ - tensorboard visualization
+│   └── samples/ - visualization samples in the training process
+│
+├── trainer/ - trainers
+│   └── trainer.py
+│  
+└── utils/ - small utility functions
+    ├── util.py
+    └── logger.py - set log dir for tensorboard and logging output
+```
+    
+<br>
+
+### 如果需要讀取 pkl 內容或者進行檔案的轉換，可以執行我資料夾放的程式碼（叫 mycode）
+
+<br>
+
+### 生成指定字符
+
+在 v100 放入 zip 檔，可以輸入 unzip xxx.zip 來解壓縮
+<br>
+### 生成指定字符 + 將 ttf 轉 jpg
+* 將要生成的字符放在 extracted_words.txt 中
+* 執行 python font2img_extract.py，跑完以後應該就有pkl檔，那就是 Chinese_content.pkl
+    * --ttf_path ttf檔存放位置
+    * --chara 訓練指定字符的 txt 檔
+    * --save_path 存圖片的資料夾
+    * --img_size 指定圖片大小
+    * --chara_size 指定字型大小
+ex：　
+`python font2img_extract.py --ttf_path ttfs --chara extracted_words.txt --save_path imgs --img_size 64 --chara_size 55`
+
+
+必須先提供標準字符，更改 Chinese_content.pkl 檔案，再將想生成的字的 unicode 放進 Chracter_dict.pkl 中（可執行 word_to_unicode.py 來獲得 json 檔，去頭去尾執行 json_to_pkl.py 即可得到）
+
+
+
+
+<br>
+
+### 生成：user_generate.py
+先將圖片命名為字符本人，放進 --style_path 的 folder 中，如下：
+![image](https://hackmd.io/_uploads/H1_dTuHt6.png)
+
+> 如果你的圖片檔名原本是 unicode，可以使 filename_translate.py 來讀取 unicode 並重新命名。如果圖片需要 resize 可使用 resize_to_jpg.py 更改圖片大小為 64*64。
+
+用 v100 跑，user_generate.py 要加入：
+```
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+```
+**並將 num_workers 設置為 0**
+
+* 如果要生成英文的手寫字體：
+`
+python user_generate.py --pretrained_model saved/english/saved_weights/checkpoint-iter91999.pth --style_path data/CASIA_ENGLISH/test_myfont --cfg configs/English_User.yml --dir Generated/English_User
+`
+
+* 如果要生成中文的手寫字體：
+`
+python user_generate.py --pretrained_model saved/chinese/saved_weights/checkpoint-iter199999.pth --style_path data/CASIA_CHINESE/chinese_myfont --cfg configs/Chinese_User.yml --dir Generated/Chinese_User
+`
+
+### 可能會遇到的問題
+* v100 容器閒置太久（maybe 5-6 天）會找不到 cuda，也沒辦法顯示顯卡資訊，必須要重新建立容器。
+![image](https://hackmd.io/_uploads/SkKJER0LT.png)
