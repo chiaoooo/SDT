@@ -1,22 +1,5 @@
 # <font class="h2">**SDT 執行筆記/北科AI運算平台V100**</font>
 
-<style>
-.h3 {
-  background: linear-gradient(135deg,#fff,#6FB7B7) ;
-  color: #BF0060;
-  display:block;
-  padding: 6px 5px;
-  border-radius: 4px;
-}
-.h2 {
-  background: linear-gradient(180deg,#fff 50%,	#A3D1D1) ;
-  color: #336666;
-  display:block;
-  padding: 6px 5px;
-  border-radius: 8px;
-  border-bottom: 3px solid #003060;
-}
-</style>
 
 
 **Github:** https://github.com/dailenson/SDT?tab=readme-ov-file
@@ -153,7 +136,7 @@ ex：　
 
 ### 生成：user_generate.py
 先將圖片命名為字符本人，放進 --style_path 的 folder 中，如下：
-![image](https://hackmd.io/_uploads/H1_dTuHt6.png)
+<img src="readme_image/example.png">
 
 > 如果你的圖片檔名原本是 unicode，可以使 filename_translate.py 來讀取 unicode 並重新命名。如果圖片需要 resize 可使用 resize_to_jpg.py 更改圖片大小為 64*64。
 
@@ -176,4 +159,4 @@ python user_generate.py --pretrained_model saved/chinese/saved_weights/checkpoin
 
 ### 可能會遇到的問題
 * v100 容器閒置太久（maybe 5-6 天）會找不到 cuda，也沒辦法顯示顯卡資訊，必須要重新建立容器。
-![image](https://hackmd.io/_uploads/SkKJER0LT.png)
+<img src="readme_image/v100.png">
